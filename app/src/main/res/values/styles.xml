@@ -1,0 +1,27 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Base.AppTheme"></style>
+
+    <style name="Base.AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">@color/ColorPrimary</item>
+        <item name="colorPrimaryDark">@color/ColorPrimaryDark</item>
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:titleTextStyle">@color/ColorPrimaryWhite</item>
+
+        <item name="android:windowBackground">@color/background_material_light</item>
+    </style>
+
+    <style name="ActionBarThemeOverlay" parent="">
+        <item name="android:textColorPrimary">@color/ColorPrimaryWhite</item>
+        <item name="colorControlNormal">@color/ColorPrimaryWhite</item>
+        <item name="colorControlHighlight">#3fff</item>
+    </style>
+
+    <style name="ActionBarPopupThemeOverlay" parent="ThemeOverlay.AppCompat.Light" >
+        <item name="android:background">@color/ColorPrimary</item>
+        <item name="android:textColor">@color/ColorPrimaryWhite</item>
+    </style>
+
+</resources>
