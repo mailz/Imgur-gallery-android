@@ -4,9 +4,30 @@
         <item
             android:id="@+id/navigation_item_1"
             android:checked="true"
-            android:title="Item One" />
+            android:title="@string/most_viral" />
         <item
             android:id="@+id/navigation_item_2"
-            android:title="Item Two" />
+            android:title="@string/funny" />
+        <item
+            android:id="@+id/navigation_item_3"
+            android:title="@string/awesome" />
+        <item
+            android:id="@+id/navigation_item_4"
+            android:title="@string/aww" />
+        <item
+            android:id="@+id/navigation_item_5"
+            android:title="@string/the_more_you_know" />
+        <item
+            android:id="@+id/navigation_item_6"
+            android:title="@string/storytime" />
+        <item
+            android:id="@+id/navigation_item_7"
+            android:title="@string/current_events" />
+        <item
+            android:id="@+id/navigation_item_8"
+            android:title="@string/design_art" />
+        <item
+            android:id="@+id/navigation_item_9"
+            android:title="@string/reaction" />
     </group>
 </menu>

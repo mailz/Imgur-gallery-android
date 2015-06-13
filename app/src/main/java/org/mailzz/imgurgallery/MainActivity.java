@@ -2,21 +2,28 @@ package org.mailzz.imgurgallery;
 
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
+import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.Toast;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements GalleryPreviewFragment.OnFragmentInteractionListener {
 
     static final String TAG = "MAIN_ACTIVITY";
     private Toolbar mToolbar;
@@ -31,13 +38,14 @@ public class MainActivity extends AppCompatActivity {
     private boolean mUserLearnedDrawer;
     private boolean mFromSavedInstanceState;
     private int mCurrentSelectedPosition;
+    private FragmentManager fragmentManager;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        fragmentManager = getSupportFragmentManager();
         setUpToolbar();
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.nav_drawer);
@@ -47,6 +55,9 @@ public class MainActivity extends AppCompatActivity {
         if (savedInstanceState != null) {
             mCurrentSelectedPosition = savedInstanceState.getInt(STATE_SELECTED_POSITION);
             mFromSavedInstanceState = true;
+        }else{
+            mCurrentSelectedPosition = 0;
+            mFromSavedInstanceState = false;
         }
 
         setUpNavDrawer();
@@ -57,22 +68,65 @@ public class MainActivity extends AppCompatActivity {
         mNavigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(MenuItem menuItem) {
-
                 menuItem.setChecked(true);
+                Fragment prevFrag;
+                mDrawerLayout.closeDrawer(GravityCompat.START);
                 switch (menuItem.getItemId()) {
                     case R.id.navigation_item_1:
-                        Snackbar.make(mContentFrame, "Item One", Snackbar.LENGTH_SHORT).show();
                         mCurrentSelectedPosition = 0;
-                        return true;
+                        break;
                     case R.id.navigation_item_2:
-                        Snackbar.make(mContentFrame, "Item Two", Snackbar.LENGTH_SHORT).show();
                         mCurrentSelectedPosition = 1;
-                        return true;
+                        break;
+                    case R.id.navigation_item_3:
+                        mCurrentSelectedPosition = 2;
+                        break;
+                    case R.id.navigation_item_4:
+                        mCurrentSelectedPosition = 3;
+                        break;
+                    case R.id.navigation_item_5:
+                        mCurrentSelectedPosition = 4;
+                        break;
+                    case R.id.navigation_item_6:
+                        mCurrentSelectedPosition = 5;
+                        break;
+                    case R.id.navigation_item_7:
+                        mCurrentSelectedPosition = 6;
+                        break;
+                    case R.id.navigation_item_8:
+                        mCurrentSelectedPosition = 7;
+                        break;
+                    case R.id.navigation_item_9:
+                        mCurrentSelectedPosition = 8;
+                        break;
                     default:
-                        return true;
+                        mCurrentSelectedPosition = 0;
+                        break;
                 }
+                changeFragment(mCurrentSelectedPosition, getSupportFragmentManager());
+                return true;
             }
         });
+
+        ActionBarDrawerToggle mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, mToolbar, R.string.openDrawer, R.string.closeDrawer) {
+            @Override
+            public void onDrawerOpened(View drawerView) {
+                super.onDrawerOpened(drawerView);
+                // code here will execute once the drawer is opened( As I dont want anything happened whe drawer is
+                // open I am not going to put anything here)
+            }
+
+            @Override
+            public void onDrawerClosed(View drawerView) {
+                super.onDrawerClosed(drawerView);
+                // Code here will execute once drawer is closed
+            }
+        };
+
+        mDrawerLayout.setDrawerListener(mDrawerToggle); // drawer Listener set to the drawer toggle
+        mDrawerToggle.syncState();
+
+        changeFragment(mCurrentSelectedPosition, getSupportFragmentManager());
 
     }
 
@@ -82,8 +136,106 @@ public class MainActivity extends AppCompatActivity {
         outState.putInt(STATE_SELECTED_POSITION, mCurrentSelectedPosition);
     }
 
+    private void changeFragment(int state, FragmentManager fm){
+        Fragment prevFrag;
+        switch (state) {
+            case 0:
+                prevFrag = fm.findFragmentByTag(getString(R.string.most_viral));
+                if (prevFrag == null || !(prevFrag instanceof GalleryPreviewFragment)) {
+                    fm.beginTransaction().replace(R.id.nav_contentframe,
+                            GalleryPreviewFragment.newInstance(getString(R.string.most_viral),"first fragment"),
+                            getString(R.string.most_viral)).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).commit();
+                } else {
+                    fm.beginTransaction().setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).replace(R.id.nav_contentframe, prevFrag, getString(R.string.most_viral)).commitAllowingStateLoss();
+                }
+                break;
+            case 1:
+                prevFrag = fm.findFragmentByTag(getString(R.string.funny));
+                if (prevFrag == null || !(prevFrag instanceof GalleryPreviewFragment)) {
+                    fm.beginTransaction().replace(R.id.nav_contentframe,
+                            GalleryPreviewFragment.newInstance(getString(R.string.funny),"second fragment"),
+                            getString(R.string.funny)).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).commit();
+                } else {
+                    fm.beginTransaction().setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).replace(R.id.nav_contentframe, prevFrag, getString(R.string.funny)).commitAllowingStateLoss();
+                }
+                break;
+            case 2:
+                prevFrag = fm.findFragmentByTag(getString(R.string.awesome));
+                if (prevFrag == null || !(prevFrag instanceof GalleryPreviewFragment)) {
+                    fm.beginTransaction().replace(R.id.nav_contentframe,
+                            GalleryPreviewFragment.newInstance(getString(R.string.awesome), "third fragment"),
+                            getString(R.string.awesome)).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).commit();
+                } else {
+                    fm.beginTransaction().setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).replace(R.id.nav_contentframe, prevFrag, getString(R.string.awesome)).commitAllowingStateLoss();
+                }
+                break;
+            case 3:
+                prevFrag = fm.findFragmentByTag(getString(R.string.aww));
+                if (prevFrag == null || !(prevFrag instanceof GalleryPreviewFragment)) {
+                    fm.beginTransaction().replace(R.id.nav_contentframe,
+                            GalleryPreviewFragment.newInstance(getString(R.string.aww), "fourth fragment"),
+                            getString(R.string.aww)).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).commit();
+                } else {
+                    fm.beginTransaction().setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).replace(R.id.nav_contentframe, prevFrag, getString(R.string.aww)).commitAllowingStateLoss();
+                }
+                break;
+            case 4:
+                prevFrag = fm.findFragmentByTag(getString(R.string.the_more_you_know));
+                if (prevFrag == null || !(prevFrag instanceof GalleryPreviewFragment)) {
+                    fm.beginTransaction().replace(R.id.nav_contentframe,
+                            GalleryPreviewFragment.newInstance(getString(R.string.the_more_you_know), "fifth fragment"),
+                            getString(R.string.the_more_you_know)).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).commit();
+                } else {
+                    fm.beginTransaction().setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).replace(R.id.nav_contentframe, prevFrag, getString(R.string.the_more_you_know)).commitAllowingStateLoss();
+                }
+                break;
+            case 5:
+                prevFrag = fm.findFragmentByTag(getString(R.string.storytime));
+                if (prevFrag == null || !(prevFrag instanceof GalleryPreviewFragment)) {
+                    fm.beginTransaction().replace(R.id.nav_contentframe,
+                            GalleryPreviewFragment.newInstance(getString(R.string.storytime), "sixth fragment"),
+                            getString(R.string.storytime)).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).commit();
+                } else {
+                    fm.beginTransaction().setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).replace(R.id.nav_contentframe, prevFrag, getString(R.string.storytime)).commitAllowingStateLoss();
+                }
+                break;
+            case 6:
+                prevFrag = fm.findFragmentByTag(getString(R.string.current_events));
+                if (prevFrag == null || !(prevFrag instanceof GalleryPreviewFragment)) {
+                    fm.beginTransaction().replace(R.id.nav_contentframe,
+                            GalleryPreviewFragment.newInstance(getString(R.string.current_events), "seventh fragment"),
+                            getString(R.string.current_events)).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).commit();
+                } else {
+                    fm.beginTransaction().setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).replace(R.id.nav_contentframe, prevFrag, getString(R.string.current_events)).commitAllowingStateLoss();
+                }
+                break;
+            case 7:
+                prevFrag = fm.findFragmentByTag(getString(R.string.design_art));
+                if (prevFrag == null || !(prevFrag instanceof GalleryPreviewFragment)) {
+                    fm.beginTransaction().replace(R.id.nav_contentframe,
+                            GalleryPreviewFragment.newInstance(getString(R.string.design_art), "eighth fragment"),
+                            getString(R.string.design_art)).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).commit();
+                } else {
+                    fm.beginTransaction().setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).replace(R.id.nav_contentframe, prevFrag, getString(R.string.design_art)).commitAllowingStateLoss();
+                }
+                break;
+            case 8:
+                prevFrag = fm.findFragmentByTag(getString(R.string.reaction));
+                if (prevFrag == null || !(prevFrag instanceof GalleryPreviewFragment)) {
+                    fm.beginTransaction().replace(R.id.nav_contentframe,
+                            GalleryPreviewFragment.newInstance(getString(R.string.reaction), "ninth fragment"),
+                            getString(R.string.reaction)).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).commit();
+                } else {
+                    fm.beginTransaction().setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).replace(R.id.nav_contentframe, prevFrag, getString(R.string.reaction)).commitAllowingStateLoss();
+                }
+                break;
+            default:
+                break;
+        }
+    }
+
     @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+    protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
         mCurrentSelectedPosition = savedInstanceState.getInt(STATE_SELECTED_POSITION, 0);
         Menu menu = mNavigationView.getMenu();
@@ -100,7 +252,29 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
 
         switch (item.getItemId()) {
-            case R.id.action_settings:
+            case R.id.action_popularity:
+                //TODO add logic
+                Toast.makeText(this,"popularity", Toast.LENGTH_SHORT).show();
+                return true;
+            case R.id.action_newest_first:
+                //TODO add logic
+                Toast.makeText(this,"newest_first", Toast.LENGTH_SHORT).show();
+                return true;
+            case R.id.action_highest_scoring:
+                //TODO add logic
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setTitle(getResources().getString(R.string.period_dialog_title))
+                        .setCancelable(true)
+                        .setItems(R.array.period_array, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                // The 'which' argument contains the index position
+                                // of the selected item
+                                //TODO get width and sent to activity
+                            }
+                        });
+                AlertDialog dialog = builder.create();
+                dialog.show();
+
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -115,7 +289,6 @@ public class MainActivity extends AppCompatActivity {
 
     private void setUpNavDrawer() {
         if (mToolbar != null) {
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             mToolbar.setNavigationIcon(R.drawable.ic_drawer);
             mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
                 @Override
@@ -145,45 +318,8 @@ public class MainActivity extends AppCompatActivity {
         return sharedPref.getString(settingName, defaultValue);
     }
 
+    @Override
+    public void onFragmentInteraction(String string) {
 
-    /**
-     * A placeholder fragment containing a simple view.
-     */
-//    public static class PlaceholderFragment extends Fragment {
-//        /**
-//         * The fragment argument representing the section number for this
-//         * fragment.
-//         */
-//        private static final String ARG_SECTION_NUMBER = "section_number";
-//
-//        /**
-//         * Returns a new instance of this fragment for the given section
-//         * number.
-//         */
-//        public static PlaceholderFragment newInstance(int sectionNumber) {
-//            PlaceholderFragment fragment = new PlaceholderFragment();
-//            Bundle args = new Bundle();
-//            args.putInt(ARG_SECTION_NUMBER, sectionNumber);
-//            fragment.setArguments(args);
-//            return fragment;
-//        }
-//
-//        public PlaceholderFragment() {
-//        }
-//
-//        @Override
-//        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-//                                 Bundle savedInstanceState) {
-//            View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-//            return rootView;
-//        }
-//
-//        @Override
-//        public void onAttach(Activity activity) {
-//            super.onAttach(activity);
-//            ((MainActivity) activity).onSectionAttached(
-//                    getArguments().getInt(ARG_SECTION_NUMBER));
-//        }
-//    }
-
+    }
 }

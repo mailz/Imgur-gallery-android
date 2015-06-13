@@ -2,6 +2,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.suleiman.material.activities.NavDrawerActivity">
-    <item android:id="@+id/action_settings" android:title="@string/action_settings"
+    <item android:id="@+id/action_popularity" android:title="@string/action_order_popularity"
+        android:orderInCategory="100" app:showAsAction="never" />
+    <item android:id="@+id/action_newest_first" android:title="@string/action_order_newest_first"
+        android:orderInCategory="100" app:showAsAction="never" />
+    <item android:id="@+id/action_highest_scoring" android:title="@string/action_order_highest_scoring"
         android:orderInCategory="100" app:showAsAction="never" />
 </menu>
