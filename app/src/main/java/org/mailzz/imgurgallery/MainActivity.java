@@ -2,10 +2,9 @@ package org.mailzz.imgurgallery;
 
 
 import android.content.Context;
-import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
@@ -14,14 +13,14 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
-import android.widget.Toast;
+
+import org.mailzz.imgurgallery.models.ObjectForDetailView;
 
 public class MainActivity extends AppCompatActivity implements GalleryPreviewFragment.OnFragmentInteractionListener {
 
@@ -29,33 +28,32 @@ public class MainActivity extends AppCompatActivity implements GalleryPreviewFra
     private Toolbar mToolbar;
     private DrawerLayout mDrawerLayout;
     private NavigationView mNavigationView;
-    private FrameLayout mContentFrame;
+
 
     private static final String PREFERENCES_FILE = "mymaterialapp_settings";
     private static final String PREF_USER_LEARNED_DRAWER = "navigation_drawer_learned";
     private static final String STATE_SELECTED_POSITION = "selected_navigation_drawer_position";
 
     private boolean mUserLearnedDrawer;
-    private boolean mFromSavedInstanceState;
     private int mCurrentSelectedPosition;
-    private FragmentManager fragmentManager;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        fragmentManager = getSupportFragmentManager();
+
         setUpToolbar();
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.nav_drawer);
 
         mUserLearnedDrawer = Boolean.valueOf(readSharedSetting(this, PREF_USER_LEARNED_DRAWER, "false"));
 
+        boolean mFromSavedInstanceState;
         if (savedInstanceState != null) {
             mCurrentSelectedPosition = savedInstanceState.getInt(STATE_SELECTED_POSITION);
             mFromSavedInstanceState = true;
-        }else{
+        } else {
             mCurrentSelectedPosition = 0;
             mFromSavedInstanceState = false;
         }
@@ -63,7 +61,7 @@ public class MainActivity extends AppCompatActivity implements GalleryPreviewFra
         setUpNavDrawer();
 
         mNavigationView = (NavigationView) findViewById(R.id.nav_view);
-        mContentFrame = (FrameLayout) findViewById(R.id.nav_contentframe);
+        FrameLayout mContentFrame = (FrameLayout) findViewById(R.id.nav_contentframe);
 
         mNavigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -136,14 +134,14 @@ public class MainActivity extends AppCompatActivity implements GalleryPreviewFra
         outState.putInt(STATE_SELECTED_POSITION, mCurrentSelectedPosition);
     }
 
-    private void changeFragment(int state, FragmentManager fm){
+    private void changeFragment(int state, FragmentManager fm) {
         Fragment prevFrag;
         switch (state) {
             case 0:
                 prevFrag = fm.findFragmentByTag(getString(R.string.most_viral));
                 if (prevFrag == null || !(prevFrag instanceof GalleryPreviewFragment)) {
                     fm.beginTransaction().replace(R.id.nav_contentframe,
-                            GalleryPreviewFragment.newInstance(getString(R.string.most_viral),"first fragment"),
+                            GalleryPreviewFragment.newInstance(getString(R.string.most_viral), "top", false),
                             getString(R.string.most_viral)).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).commit();
                 } else {
                     fm.beginTransaction().setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).replace(R.id.nav_contentframe, prevFrag, getString(R.string.most_viral)).commitAllowingStateLoss();
@@ -153,7 +151,7 @@ public class MainActivity extends AppCompatActivity implements GalleryPreviewFra
                 prevFrag = fm.findFragmentByTag(getString(R.string.funny));
                 if (prevFrag == null || !(prevFrag instanceof GalleryPreviewFragment)) {
                     fm.beginTransaction().replace(R.id.nav_contentframe,
-                            GalleryPreviewFragment.newInstance(getString(R.string.funny),"second fragment"),
+                            GalleryPreviewFragment.newInstance(getString(R.string.funny), "2", true),
                             getString(R.string.funny)).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).commit();
                 } else {
                     fm.beginTransaction().setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).replace(R.id.nav_contentframe, prevFrag, getString(R.string.funny)).commitAllowingStateLoss();
@@ -163,7 +161,7 @@ public class MainActivity extends AppCompatActivity implements GalleryPreviewFra
                 prevFrag = fm.findFragmentByTag(getString(R.string.awesome));
                 if (prevFrag == null || !(prevFrag instanceof GalleryPreviewFragment)) {
                     fm.beginTransaction().replace(R.id.nav_contentframe,
-                            GalleryPreviewFragment.newInstance(getString(R.string.awesome), "third fragment"),
+                            GalleryPreviewFragment.newInstance(getString(R.string.awesome), "5", true),
                             getString(R.string.awesome)).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).commit();
                 } else {
                     fm.beginTransaction().setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).replace(R.id.nav_contentframe, prevFrag, getString(R.string.awesome)).commitAllowingStateLoss();
@@ -173,7 +171,7 @@ public class MainActivity extends AppCompatActivity implements GalleryPreviewFra
                 prevFrag = fm.findFragmentByTag(getString(R.string.aww));
                 if (prevFrag == null || !(prevFrag instanceof GalleryPreviewFragment)) {
                     fm.beginTransaction().replace(R.id.nav_contentframe,
-                            GalleryPreviewFragment.newInstance(getString(R.string.aww), "fourth fragment"),
+                            GalleryPreviewFragment.newInstance(getString(R.string.aww), "8", true),
                             getString(R.string.aww)).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).commit();
                 } else {
                     fm.beginTransaction().setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).replace(R.id.nav_contentframe, prevFrag, getString(R.string.aww)).commitAllowingStateLoss();
@@ -183,7 +181,7 @@ public class MainActivity extends AppCompatActivity implements GalleryPreviewFra
                 prevFrag = fm.findFragmentByTag(getString(R.string.the_more_you_know));
                 if (prevFrag == null || !(prevFrag instanceof GalleryPreviewFragment)) {
                     fm.beginTransaction().replace(R.id.nav_contentframe,
-                            GalleryPreviewFragment.newInstance(getString(R.string.the_more_you_know), "fifth fragment"),
+                            GalleryPreviewFragment.newInstance(getString(R.string.the_more_you_know), "11", true),
                             getString(R.string.the_more_you_know)).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).commit();
                 } else {
                     fm.beginTransaction().setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).replace(R.id.nav_contentframe, prevFrag, getString(R.string.the_more_you_know)).commitAllowingStateLoss();
@@ -193,7 +191,7 @@ public class MainActivity extends AppCompatActivity implements GalleryPreviewFra
                 prevFrag = fm.findFragmentByTag(getString(R.string.storytime));
                 if (prevFrag == null || !(prevFrag instanceof GalleryPreviewFragment)) {
                     fm.beginTransaction().replace(R.id.nav_contentframe,
-                            GalleryPreviewFragment.newInstance(getString(R.string.storytime), "sixth fragment"),
+                            GalleryPreviewFragment.newInstance(getString(R.string.storytime), "14", true),
                             getString(R.string.storytime)).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).commit();
                 } else {
                     fm.beginTransaction().setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).replace(R.id.nav_contentframe, prevFrag, getString(R.string.storytime)).commitAllowingStateLoss();
@@ -203,7 +201,7 @@ public class MainActivity extends AppCompatActivity implements GalleryPreviewFra
                 prevFrag = fm.findFragmentByTag(getString(R.string.current_events));
                 if (prevFrag == null || !(prevFrag instanceof GalleryPreviewFragment)) {
                     fm.beginTransaction().replace(R.id.nav_contentframe,
-                            GalleryPreviewFragment.newInstance(getString(R.string.current_events), "seventh fragment"),
+                            GalleryPreviewFragment.newInstance(getString(R.string.current_events), "17", true),
                             getString(R.string.current_events)).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).commit();
                 } else {
                     fm.beginTransaction().setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).replace(R.id.nav_contentframe, prevFrag, getString(R.string.current_events)).commitAllowingStateLoss();
@@ -213,7 +211,7 @@ public class MainActivity extends AppCompatActivity implements GalleryPreviewFra
                 prevFrag = fm.findFragmentByTag(getString(R.string.design_art));
                 if (prevFrag == null || !(prevFrag instanceof GalleryPreviewFragment)) {
                     fm.beginTransaction().replace(R.id.nav_contentframe,
-                            GalleryPreviewFragment.newInstance(getString(R.string.design_art), "eighth fragment"),
+                            GalleryPreviewFragment.newInstance(getString(R.string.design_art), "20", true),
                             getString(R.string.design_art)).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).commit();
                 } else {
                     fm.beginTransaction().setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).replace(R.id.nav_contentframe, prevFrag, getString(R.string.design_art)).commitAllowingStateLoss();
@@ -223,7 +221,7 @@ public class MainActivity extends AppCompatActivity implements GalleryPreviewFra
                 prevFrag = fm.findFragmentByTag(getString(R.string.reaction));
                 if (prevFrag == null || !(prevFrag instanceof GalleryPreviewFragment)) {
                     fm.beginTransaction().replace(R.id.nav_contentframe,
-                            GalleryPreviewFragment.newInstance(getString(R.string.reaction), "ninth fragment"),
+                            GalleryPreviewFragment.newInstance(getString(R.string.reaction), "23", true),
                             getString(R.string.reaction)).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).commit();
                 } else {
                     fm.beginTransaction().setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).replace(R.id.nav_contentframe, prevFrag, getString(R.string.reaction)).commitAllowingStateLoss();
@@ -242,43 +240,6 @@ public class MainActivity extends AppCompatActivity implements GalleryPreviewFra
         menu.getItem(mCurrentSelectedPosition).setChecked(true);
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-
-        switch (item.getItemId()) {
-            case R.id.action_popularity:
-                //TODO add logic
-                Toast.makeText(this,"popularity", Toast.LENGTH_SHORT).show();
-                return true;
-            case R.id.action_newest_first:
-                //TODO add logic
-                Toast.makeText(this,"newest_first", Toast.LENGTH_SHORT).show();
-                return true;
-            case R.id.action_highest_scoring:
-                //TODO add logic
-                AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                builder.setTitle(getResources().getString(R.string.period_dialog_title))
-                        .setCancelable(true)
-                        .setItems(R.array.period_array, new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                // The 'which' argument contains the index position
-                                // of the selected item
-                                //TODO get width and sent to activity
-                            }
-                        });
-                AlertDialog dialog = builder.create();
-                dialog.show();
-
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
 
     private void setUpToolbar() {
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -319,7 +280,12 @@ public class MainActivity extends AppCompatActivity implements GalleryPreviewFra
     }
 
     @Override
-    public void onFragmentInteraction(String string) {
-
+    public void onFragmentInteraction(ObjectForDetailView obj) {
+//        ImageItem item = (ImageItem) parent.getItemAtPosition(position);
+        //Create intent
+        Intent intent = new Intent(MainActivity.this, ImageDetailActivity.class);
+        intent.putExtra("object", obj);
+        //Start details activity
+        startActivity(intent);
     }
 }

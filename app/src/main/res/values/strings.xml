@@ -29,4 +29,7 @@
     <string name="design_art"><![CDATA[Design &  Art]]></string>
     <string name="reaction">Reaction</string>
     <string name="error">Ошибка</string>
+    <string name="title_activity_image_detail">ImageDetailActivity</string>
+
+    <string name="hello_world">Hello world!</string>
 </resources>

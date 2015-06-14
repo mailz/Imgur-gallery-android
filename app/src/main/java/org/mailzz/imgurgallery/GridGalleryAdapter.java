@@ -7,29 +7,32 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 
-import java.util.ArrayList;
+import org.mailzz.imgurgallery.models.ObjectForDetailView;
+
 import java.util.List;
 
 /**
  * AppWell.org
  * Created by dmitrijtrandin on 13.06.15.
  */
-public class GridGalleryAdapter extends ArrayAdapter<String> {
+public class GridGalleryAdapter extends ArrayAdapter<ObjectForDetailView> {
 
+    private static final String TAG = "GRID_GALLERY_ADAPTER";
     private Context context;
     private int layoutResourceId;
-    private List<String> data = new ArrayList();
+    private List<ObjectForDetailView> data;
 
     public GridGalleryAdapter(Context context, int resource, List objects) {
         super(context, resource, objects);
         this.layoutResourceId = resource;
         this.context = context;
         this.data = objects;
+
     }
+
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
@@ -46,10 +49,11 @@ public class GridGalleryAdapter extends ArrayAdapter<String> {
             holder = (ViewHolder) row.getTag();
         }
 
-        String link = data.get(position);
+        String link = data.get(position).getImageLink();
         Glide.with(context).load(link)
                 .centerCrop()
-                .placeholder(android.R.drawable.progress_indeterminate_horizontal)
+                .placeholder(R.drawable.loading)
+                .error(R.drawable.error)
                 .crossFade()
                 .into(holder.image);
         return row;

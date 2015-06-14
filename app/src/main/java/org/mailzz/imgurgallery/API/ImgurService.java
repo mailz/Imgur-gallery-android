@@ -3,9 +3,6 @@ package org.mailzz.imgurgallery.API;
 import com.google.gson.JsonElement;
 
 import org.mailzz.imgurgallery.Config;
-import org.mailzz.imgurgallery.models.ResponseObject;
-
-import java.util.List;
 
 import retrofit.Callback;
 import retrofit.http.GET;
@@ -31,4 +28,16 @@ public interface ImgurService {
     @Headers("Authorization: Client-ID " + Config.CLIENT_ID)
     @GET("/gallery/{section}/{sort}/{window}/{page}/")
     void getGallery(@Path("section") String section, @Path("sort") String sort, @Path("page") int page, Callback<JsonElement> cb);
+
+    @Headers("Authorization: Client-ID " + Config.CLIENT_ID)
+    @GET("/topics/{section}/{sort}/{window}/{page}/")
+    void getTopic(@Path("section") String section, @Path("sort") String sort, @Path("window") String window, @Path("page") int page, Callback<JsonElement> cb);
+
+    @Headers("Authorization: Client-ID " + Config.CLIENT_ID)
+    @GET("/topics/{section}/{sort}/{window}/{page}/")
+    void getTopic(@Path("section") String section, @Path("sort") String sort, @Path("page") int page, Callback<JsonElement> cb);
+
+    @Headers("Authorization: Client-ID " + Config.CLIENT_ID)
+    @GET("/gallery/{id}/")
+    void getAlbum(@Path("id") String id, Callback<JsonElement> cb);
 }
