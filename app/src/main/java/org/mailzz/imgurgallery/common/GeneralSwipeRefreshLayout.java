@@ -13,13 +13,10 @@ import android.util.Log;
 public class GeneralSwipeRefreshLayout extends SwipeRefreshLayout {
     private OnChildScrollUpListener mScrollListenerNeeded;
 
-    public static interface OnChildScrollUpListener {
-        public boolean canChildScrollUp();
-    }
-
     public GeneralSwipeRefreshLayout(Context context) {
         super(context);
     }
+
     public GeneralSwipeRefreshLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
@@ -36,7 +33,11 @@ public class GeneralSwipeRefreshLayout extends SwipeRefreshLayout {
         if (mScrollListenerNeeded == null) {
             Log.e(GeneralSwipeRefreshLayout.class.getSimpleName(), "listener is not defined!");
         }
-        return mScrollListenerNeeded == null ? false : mScrollListenerNeeded.canChildScrollUp();
+        return mScrollListenerNeeded != null && mScrollListenerNeeded.canChildScrollUp();
+    }
+
+    public interface OnChildScrollUpListener {
+        boolean canChildScrollUp();
     }
 }
 

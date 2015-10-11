@@ -52,8 +52,8 @@ public class GridGalleryAdapter extends ArrayAdapter<ObjectForDetailView> {
         String link = data.get(position).getImageLink();
         Glide.with(context).load(link)
                 .centerCrop()
-                .placeholder(R.drawable.loading)
-                .error(R.drawable.error)
+                .placeholder(R.mipmap.no_image_available)
+                .error(R.mipmap.no_image_available)
                 .crossFade()
                 .into(holder.image);
         return row;

@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/ImgurGallery.iml" filepath="$PROJECT_DIR$/ImgurGallery.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Imgur-gallery-android.iml" filepath="$PROJECT_DIR$/Imgur-gallery-android.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
   </component>

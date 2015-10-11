@@ -2,7 +2,6 @@ package org.mailzz.imgurgallery;
 
 import android.app.Activity;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -64,7 +63,6 @@ public class GalleryPreviewFragment extends Fragment implements Callback<JsonEle
 
     private ArrayList<ObjectForDetailView> values;
     private GridGalleryAdapter gridAdapter;
-    private boolean isRefreshing;
     private GeneralSwipeRefreshLayout swipeLayout;
 
     //parameters for query
@@ -77,6 +75,10 @@ public class GalleryPreviewFragment extends Fragment implements Callback<JsonEle
     private boolean isDataLoading;
 
 
+    public GalleryPreviewFragment() {
+        // Required empty public constructor
+    }
+
     public static GalleryPreviewFragment newInstance(String param1, String param2, boolean param3) {
         GalleryPreviewFragment fragment = new GalleryPreviewFragment();
         Bundle args = new Bundle();
@@ -85,10 +87,6 @@ public class GalleryPreviewFragment extends Fragment implements Callback<JsonEle
         args.putBoolean(IS_TOPIC, param3);
         fragment.setArguments(args);
         return fragment;
-    }
-
-    public GalleryPreviewFragment() {
-        // Required empty public constructor
     }
 
     private void showContent() {
@@ -113,6 +111,7 @@ public class GalleryPreviewFragment extends Fragment implements Callback<JsonEle
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
@@ -153,6 +152,7 @@ public class GalleryPreviewFragment extends Fragment implements Callback<JsonEle
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public void onViewStateRestored(Bundle savedInstanceState) {
         super.onViewStateRestored(savedInstanceState);
         if (savedInstanceState != null) {
@@ -198,8 +198,10 @@ public class GalleryPreviewFragment extends Fragment implements Callback<JsonEle
             }
         });
         ActionBar ab = ((MainActivity) getActivity()).getSupportActionBar();
-        ab.setTitle(mTitle);
-        ab.setElevation(6);
+        if (ab != null) {
+            ab.setTitle(mTitle);
+            ab.setElevation(6);
+        }
     }
 
     private void startDataLoad() {

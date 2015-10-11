@@ -2,14 +2,11 @@ package org.mailzz.imgurgallery.common;
 
 import android.app.Activity;
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import com.bumptech.glide.Glide;
@@ -58,8 +55,8 @@ public class FullscreenImageAdapter extends PagerAdapter {
         Glide.with(_activity).load(_imagePaths.get(position))
                 .centerCrop()
                 .fitCenter()
-                .placeholder(R.drawable.loading)
-                .error(R.drawable.error)
+                .placeholder(R.mipmap.no_image_available)
+                .error(R.mipmap.no_image_available)
                 .crossFade()
                 .into(imgDisplay);
         ((ViewPager) container).addView(viewLayout);

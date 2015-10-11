@@ -18,25 +18,33 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.FrameLayout;
 
 import org.mailzz.imgurgallery.models.ObjectForDetailView;
 
 public class MainActivity extends AppCompatActivity implements GalleryPreviewFragment.OnFragmentInteractionListener {
 
+    @SuppressWarnings("unused")
     static final String TAG = "MAIN_ACTIVITY";
-    private Toolbar mToolbar;
-    private DrawerLayout mDrawerLayout;
-    private NavigationView mNavigationView;
-
-
     private static final String PREFERENCES_FILE = "mymaterialapp_settings";
     private static final String PREF_USER_LEARNED_DRAWER = "navigation_drawer_learned";
     private static final String STATE_SELECTED_POSITION = "selected_navigation_drawer_position";
-
+    private Toolbar mToolbar;
+    private DrawerLayout mDrawerLayout;
+    private NavigationView mNavigationView;
     private boolean mUserLearnedDrawer;
     private int mCurrentSelectedPosition;
 
+    public static void saveSharedSetting(Context ctx, String settingName, String settingValue) {
+        SharedPreferences sharedPref = ctx.getSharedPreferences(PREFERENCES_FILE, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putString(settingName, settingValue);
+        editor.apply();
+    }
+
+    public static String readSharedSetting(Context ctx, String settingName, String defaultValue) {
+        SharedPreferences sharedPref = ctx.getSharedPreferences(PREFERENCES_FILE, Context.MODE_PRIVATE);
+        return sharedPref.getString(settingName, defaultValue);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,25 +57,20 @@ public class MainActivity extends AppCompatActivity implements GalleryPreviewFra
 
         mUserLearnedDrawer = Boolean.valueOf(readSharedSetting(this, PREF_USER_LEARNED_DRAWER, "false"));
 
-        boolean mFromSavedInstanceState;
         if (savedInstanceState != null) {
             mCurrentSelectedPosition = savedInstanceState.getInt(STATE_SELECTED_POSITION);
-            mFromSavedInstanceState = true;
         } else {
             mCurrentSelectedPosition = 0;
-            mFromSavedInstanceState = false;
         }
 
         setUpNavDrawer();
 
         mNavigationView = (NavigationView) findViewById(R.id.nav_view);
-        FrameLayout mContentFrame = (FrameLayout) findViewById(R.id.nav_contentframe);
 
         mNavigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(MenuItem menuItem) {
                 menuItem.setChecked(true);
-                Fragment prevFrag;
                 mDrawerLayout.closeDrawer(GravityCompat.START);
                 switch (menuItem.getItemId()) {
                     case R.id.navigation_item_1:
@@ -240,7 +243,6 @@ public class MainActivity extends AppCompatActivity implements GalleryPreviewFra
         menu.getItem(mCurrentSelectedPosition).setChecked(true);
     }
 
-
     private void setUpToolbar() {
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         if (mToolbar != null) {
@@ -265,18 +267,6 @@ public class MainActivity extends AppCompatActivity implements GalleryPreviewFra
             saveSharedSetting(this, PREF_USER_LEARNED_DRAWER, "true");
         }
 
-    }
-
-    public static void saveSharedSetting(Context ctx, String settingName, String settingValue) {
-        SharedPreferences sharedPref = ctx.getSharedPreferences(PREFERENCES_FILE, Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPref.edit();
-        editor.putString(settingName, settingValue);
-        editor.apply();
-    }
-
-    public static String readSharedSetting(Context ctx, String settingName, String defaultValue) {
-        SharedPreferences sharedPref = ctx.getSharedPreferences(PREFERENCES_FILE, Context.MODE_PRIVATE);
-        return sharedPref.getString(settingName, defaultValue);
     }
 
     @Override
